@@ -15,8 +15,8 @@ def error_callback(bot, update, error):
 def main():
     logger.info('starting...')
 
-    for modname in ('weather', 'awesome'):
-        module = getattr(importlib.import_module(f'modules.{modname}'), 'Paw')
+    for paw_name in ('weather', 'awesome', 'news'):
+        module = getattr(importlib.import_module(f'paws.{paw_name}'), 'Paw')
         logger.info('Paw imported: %s (handlers: %d)', module.name, len(module.handlers))
         for handler in module.handlers:
             dispatcher.add_handler(handler)
