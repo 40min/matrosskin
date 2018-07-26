@@ -2,7 +2,14 @@
 
 * Weather
     ** Save user location into into sqlite
-    ** Add new command to request location from updated location or for location from db
+    
+* News
+    ** Generate news by command
+    ** Add education of new model based on chat
+    ** Generate news from time-to time mixed with chat-model
 
 * Common:
     ** autoexplore paws
+    ** configurable owner
+    ** extend owner commands with go-sleep
+    ** add config yaml
