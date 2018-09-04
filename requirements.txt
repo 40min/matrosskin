@@ -1,3 +1,4 @@
+--extra-index-url https://test.pypi.org/project/
 python-telegram-bot==10.1.0
 weather-api==1.0.4
--e git+https://github.com/40min/analner.git@master#egg=analner
+analner==0.0.3
