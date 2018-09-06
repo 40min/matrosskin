@@ -4,6 +4,8 @@ import logging
 from bot import dispatcher
 from bot import updater
 
+from paws.news import grab_news_callback
+
 logging.basicConfig(format='[%(asctime)s][%(name)s] %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -22,6 +24,9 @@ def main():
             dispatcher.add_handler(handler)
 
     dispatcher.add_error_handler(error_callback)
+
+    job_queue = updater.job_queue
+   # job_queue.run_repeating(grab_news_callback, interval=60*60*6, first=0)
 
     updater.start_polling(clean=True)
     updater.idle()
