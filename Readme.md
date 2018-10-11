@@ -10,8 +10,5 @@
 
 * Common:
     * autoexplore paws
-    * configurable owner
-    * extend owner commands with go-sleep
-    * add config yaml
     * handle errors
     

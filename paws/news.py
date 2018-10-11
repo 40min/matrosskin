@@ -1,4 +1,3 @@
-import os
 import logging
 from datetime import datetime
 
@@ -8,11 +7,13 @@ from telegram.ext.dispatcher import run_async
 from analner.news_maker import FunMaker
 from analner.head_grab import HeadGrab, TARGET_URL
 
+from modules.settings import config
+
 DEFAULT_NEWS = 'no news at all (((('
 
 logger = logging.getLogger(__name__)
 
-data_path = os.environ.get('DATA_PATH')
+data_path = config['data_path']
 if not data_path:
     raise Exception("Please setup path to storing data [data_path] var")
 
