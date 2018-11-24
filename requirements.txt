@@ -1,5 +1,5 @@
 --extra-index-url https://test.pypi.org/project/
 python-telegram-bot>=10.1.0
 weather-api>=1.0.4
-analner==0.0.6
+analner==0.0.7
 pyyaml

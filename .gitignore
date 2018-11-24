@@ -108,3 +108,5 @@ config.yaml
 .idea/
 
 ./data
+
+.DS_Store
