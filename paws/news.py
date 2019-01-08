@@ -17,8 +17,10 @@ data_path = config['data_path']
 if not data_path:
     raise Exception("Please setup path to storing data [data_path] var")
 
-fun_generator = FunMaker(data_path)
-head_grab = HeadGrab(data_path, TARGET_URL)
+dropbox_token = config.get('dropbox_token')
+
+fun_generator = FunMaker(data_path, dropbox_token)
+head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
 
 
 def grab_news_callback(bot, job):
