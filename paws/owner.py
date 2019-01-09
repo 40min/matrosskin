@@ -6,6 +6,7 @@ from telegram.ext.dispatcher import run_async
 
 from bot import updater
 from modules.settings import config
+from .generic import Paw
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +26,8 @@ def on_exit(bot, update):
         threading.Thread(target=shutdown).start()
 
 
-class Paw:
+class OwnerPaw(Paw):
     name = 'owner'
-    handlers = (
+    handlers = {
         CommandHandler(['exit', 'e'], on_exit),
-    )
+    }

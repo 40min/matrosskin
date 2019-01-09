@@ -3,6 +3,7 @@ import logging
 from telegram.ext import CommandHandler
 from telegram.ext.dispatcher import run_async
 
+from .generic import Paw
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +17,8 @@ def start(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text='Mrrr .... ?')
 
 
-class Paw:
+class AwesomePaw(Paw):
     name = 'awesome'
-    handlers = (
+    handlers = {
         CommandHandler('start', start),
-    )
+    }

@@ -6,7 +6,7 @@ from telegram import ReplyKeyboardMarkup
 from telegram.ext import MessageHandler, Filters
 
 from weather import Weather, Unit
-
+from .generic import Paw
 
 logger = logging.getLogger(__name__)
 weather = Weather(unit=Unit.CELSIUS)
@@ -79,10 +79,10 @@ def get_location(bot, update, user_data):
     weather_message(bot, latitude, longitude, update.message.chat_id)
 
 
-class Paw:
+class WeatherPaw(Paw):
     name = 'weather'
-    handlers = (
+    handlers = {
         CommandHandler(['weather', 'w'], weather_request),
         CommandHandler(['weather_loc', 'wl'], weather_request_with_update_location),
         MessageHandler(Filters.location, get_location, pass_user_data=True)
-    )
+    }

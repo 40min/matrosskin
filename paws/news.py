@@ -8,6 +8,10 @@ from analner.news_maker import FunMaker
 from analner.head_grab import HeadGrab, TARGET_URL
 
 from modules.settings import config
+from .generic import (
+    Paw,
+    Job
+)
 
 DEFAULT_NEWS = 'no news at all (((('
 
@@ -38,8 +42,11 @@ def show_news(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=news_phrase)
 
 
-class Paw:
+class NewsPaw(Paw):
     name = 'Analner news'
-    handlers = (
+    handlers = {
         CommandHandler(['news', 'n'], show_news),
-    )
+    }
+    jobs = {
+        Job(callback=grab_news_callback, interval=60*60*6, first=0)
+    }
