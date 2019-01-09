@@ -7,6 +7,9 @@
         - mixed with chat-model
         - triggered by words
     * Check ability to subscribe on news
+    * Rate generated news
+    * Save subscribers into db
+    * Add gen interval into subscription
     
 * Mushrooms
     * Receive/save picture

@@ -26,6 +26,8 @@ dropbox_token = config.get('dropbox_token')
 fun_generator = FunMaker(data_path, dropbox_token)
 head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
 
+subscribed_chats = set()
+
 
 def grab_news_callback(bot, job):
     now = datetime.now()
@@ -35,6 +37,13 @@ def grab_news_callback(bot, job):
         fun_generator.reload_model_from_txt()
 
 
+def subscribed_generate_callback(bot, job):
+    for chat_id in subscribed_chats:
+        fun_txt = fun_generator.make_phrases()
+        if fun_txt:
+            bot.send_message(chat_id=chat_id, text=fun_txt[0].encode('utf-8'))
+
+
 @run_async
 def show_news(bot, update):
     phrases = fun_generator.make_phrases()
@@ -42,11 +51,24 @@ def show_news(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=news_phrase)
 
 
+def subscribe(bot, update):
+    chat_id = update.message.chat_id
+    subscribed_chats.add(chat_id)
+
+
+def unsubscribe(bot, update):
+    chat_id = update.message.chat_id
+    subscribed_chats.remove(chat_id)
+
+
 class NewsPaw(Paw):
     name = 'Analner news'
     handlers = {
         CommandHandler(['news', 'n'], show_news),
+        CommandHandler(['subs'], subscribe),
+        CommandHandler(['unsubs'], unsubscribe),
     }
     jobs = {
-        Job(callback=grab_news_callback, interval=60*60*6, first=0)
+        Job(callback=grab_news_callback, interval=60*60*6, first=0),
+        Job(callback=subscribed_generate_callback, interval=5, first=1)
     }
