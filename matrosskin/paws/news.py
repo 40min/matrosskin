@@ -8,12 +8,15 @@ from analner.news_maker import FunMaker
 from analner.head_grab import HeadGrab, TARGET_URL
 
 from modules.settings import config
+from modules.storage import redis_storage
+
 from .generic import (
     Paw,
     Job
 )
 
 DEFAULT_NEWS = 'no news at all (((('
+SUBSCRIBE_PREFIX = 'news_subscribe'
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +29,9 @@ dropbox_token = config.get('dropbox_token')
 fun_generator = FunMaker(data_path, dropbox_token)
 head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
 
-subscribed_chats = set()
+
+def get_storage_subscribe_key(chat_id):
+    return f'{SUBSCRIBE_PREFIX}_{chat_id}'
 
 
 def grab_news_callback(bot, job):
@@ -38,11 +43,16 @@ def grab_news_callback(bot, job):
 
 
 def subscribed_generate_callback(bot, job):
-    logger.info('News: send news to subscribers')
-    for chat_id in subscribed_chats:
-        fun_txt = fun_generator.make_phrases()
-        if fun_txt:
-            bot.send_message(chat_id=chat_id, text=fun_txt[0])
+    for subs in redis_storage.scan(match=f'{SUBSCRIBE_PREFIX}*'):
+        pass
+
+    # stopping here
+
+    # for chat_id in subscribed_chats:
+    #     logger.info(f'News: send news to chat {chat_id}')
+    #     fun_txt = fun_generator.make_phrases()
+    #     if fun_txt:
+    #         bot.send_message(chat_id=chat_id, text=fun_txt[0])
 
 
 @run_async
@@ -56,13 +66,15 @@ def show_news(bot, update):
 def subscribe(bot, update):
     logger.info(f'News: subscribed user {update.message.from_user.username}')
     chat_id = update.message.chat_id
-    subscribed_chats.add(chat_id)
+    key = get_storage_subscribe_key(chat_id)
+    redis_storage.hmset(key, {'chat_id': chat_id})
 
 
 def unsubscribe(bot, update):
     logger.info(f'News: unsubscribed user {update.message.from_user.username}')
     chat_id = update.message.chat_id
-    subscribed_chats.remove(chat_id)
+    key = get_storage_subscribe_key(chat_id)
+    redis_storage.delete(key)
 
 
 class NewsPaw(Paw):

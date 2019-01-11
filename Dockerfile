@@ -11,7 +11,5 @@ COPY ./matrosskin ./matrosskin
 COPY ./config.yaml ./config.yaml
 
 RUN mkdir ./data
-COPY ./data ./data
-VOLUME data:./data
 
 CMD [ "python", "./matrosskin/app.py" ]

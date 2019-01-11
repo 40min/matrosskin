@@ -1,0 +1,17 @@
+version: '2'
+services:
+  redis:
+    image: redis:5.0.3-alpine
+    volumes:
+    - "redis:/redis_data"
+    ports:
+    - "6379:6379"
+  bot:
+    build: .
+    volumes:
+      - ./data:/usr/src/app/data
+    depends_on:
+      - redis
+
+volumes:
+  redis: {}
