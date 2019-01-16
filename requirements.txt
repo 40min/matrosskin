@@ -1,6 +1,7 @@
 --extra-index-url https://test.pypi.org/simple/
 python-telegram-bot>=10.1.0
 weather-api>=1.0.4
-analner==0.0.10
+analner>=0.0.10
 pyyaml
 redis~=3.0.1
+apiai~=1.2.3

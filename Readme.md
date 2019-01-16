@@ -6,10 +6,7 @@
         - mixed with chat-model
         - triggered by words
     * Rate generated news
-    * Add education of new model based on chat
-    * Save subscribers into db (sqlite)
-    * Add gen interval into subscription
-    
+    * Add education of new model based on chat    
 * Mushrooms
     * Receive/save picture
     * install mushrooms lib
@@ -17,6 +14,9 @@
 * Weather
     * Better approve button
     * Fix weather lib by providing api creds for Yahoo Weather
+    
+* Talks
+    * Weather integration (use action instead of text)
 
 * Common-tech:
     * better message routing
