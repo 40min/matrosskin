@@ -4,8 +4,15 @@ from datetime import (
     timedelta
 )
 
-from telegram.ext import CommandHandler
+from telegram.ext import (
+    CommandHandler,
+    CallbackQueryHandler
+)
 from telegram.ext.dispatcher import run_async
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup
+)
 
 from analner.news_maker import FunMaker
 from analner.head_grab import HeadGrab, TARGET_URL
@@ -24,6 +31,7 @@ DEFAULT_NEWS_INTERVAL = 5
 
 logger = logging.getLogger(__name__)
 
+learning_mode = config.get('learning_mode', 0)
 data_path = config['data_path']
 if not data_path:
     raise Exception("Please setup path to storing data [data_path] var")
@@ -38,12 +46,42 @@ def get_storage_subscribe_key(chat_id):
     return f'{SUBSCRIBE_PREFIX}_{chat_id}'
 
 
+def get_message_interval(update):
+    interval_txt = update.effective_message['text'].replace('/subs', '').strip()
+    if not interval_txt:
+        return DEFAULT_NEWS_INTERVAL
+    try:
+        return int(interval_txt)
+    except ValueError:
+        return DEFAULT_NEWS_INTERVAL
+
+
+def get_rate_markup():
+    keyboard = [
+        [
+            InlineKeyboardButton(":)", callback_data='1'),
+            InlineKeyboardButton(":(", callback_data='0')
+        ],
+    ]
+
+    return InlineKeyboardMarkup(keyboard)
+
+
 def grab_news_callback(bot, job):
     now = datetime.now()
     logger.info('News: Grabbing news {}' . format(now.strftime('%Y-%m-%d %H:%M:%S')))
     news_added = head_grab.run()
     if news_added:
         fun_generator.reload_model_from_txt()
+
+
+def rate_callback(bot, update):
+    query = update.callback_query
+    # stopping here: put results to chat
+    # "Selected option: {}".format(query.data)
+    bot.edit_message_text(text=query.message['text'],
+                          chat_id=query.message.chat_id,
+                          message_id=query.message.message_id)
 
 
 def subscribed_generate_callback(bot, job):
@@ -57,7 +95,8 @@ def subscribed_generate_callback(bot, job):
             logger.info(f'News: send news to chat {chat_id}')
             fun_txt = fun_generator.make_phrases()
             if fun_txt:
-                bot.send_message(chat_id=chat_id, text=fun_txt[0])
+                markup = get_rate_markup() if learning_mode else None
+                bot.send_message(chat_id=chat_id, text=fun_txt[0], reply_markup=markup)
             redis_storage.hset(key, 'last_generated', int(datetime.utcnow().timestamp()))
 
 
@@ -66,17 +105,8 @@ def show_news(bot, update):
     logger.info(f'News: single news request for user {update.message.from_user.username}')
     phrases = fun_generator.make_phrases()
     news_phrase = phrases[0] if phrases else DEFAULT_NEWS
-    bot.send_message(chat_id=update.message.chat_id, text=news_phrase)
-
-
-def get_message_interval(update):
-    interval_txt = update.effective_message['text'].replace('/subs', '').strip()
-    if not interval_txt:
-        return DEFAULT_NEWS_INTERVAL
-    try:
-        return int(interval_txt)
-    except ValueError:
-        return DEFAULT_NEWS_INTERVAL
+    markup = get_rate_markup() if learning_mode else None
+    bot.send_message(chat_id=update.message.chat_id, text=news_phrase, reply_markup=markup)
 
 
 def subscribe(bot, update):
@@ -104,6 +134,7 @@ class NewsPaw(Paw):
         CommandHandler(['news', 'n'], show_news),
         CommandHandler(['subs'], subscribe),
         CommandHandler(['unsubs'], unsubscribe),
+        CallbackQueryHandler(rate_callback)
     }
     jobs = {
         Job(callback=grab_news_callback, interval=60*60*6, first=0),

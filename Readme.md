@@ -7,8 +7,7 @@
         - triggered by words
     * Rate generated news
     * Add education of new model based on chat
-    * Save subscribers into db (sqlite)
-    * Add gen interval into subscription
+    * use pass args option in set news interval
     
 * Mushrooms
     * Receive/save picture
