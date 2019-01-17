@@ -7,8 +7,7 @@
         - triggered by words
     * Rate generated news
     * Add education of new model based on chat
-    * use pass args option in set news interval
-    
+
 * Mushrooms
     * Receive/save picture
     * install mushrooms lib
@@ -18,6 +17,9 @@
     * integrate with dialogflow
         * add request by city
         * add forecast
+        
+* Talks
+    * Weather integration (use action instead of text)
 
 * Common-tech:
     * better message routing

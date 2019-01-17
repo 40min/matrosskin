@@ -100,11 +100,16 @@ def subscribed_generate_callback(bot, job):
             redis_storage.hset(key, 'last_generated', int(datetime.utcnow().timestamp()))
 
 
+def get_news():
+    phrases = fun_generator.make_phrases()
+    news_phrase = phrases[0] if phrases else DEFAULT_NEWS
+    return news_phrase
+
+
 @run_async
 def show_news(bot, update):
     logger.info(f'News: single news request for user {update.message.from_user.username}')
-    phrases = fun_generator.make_phrases()
-    news_phrase = phrases[0] if phrases else DEFAULT_NEWS
+    news_phrase = get_news()
     markup = get_rate_markup() if learning_mode else None
     bot.send_message(chat_id=update.message.chat_id, text=news_phrase, reply_markup=markup)
 
