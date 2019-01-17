@@ -15,7 +15,9 @@
     
 * Weather
     * Better approve button
-    * Fix weather lib by providing api creds for Yahoo Weather
+    * integrate with dialogflow
+        * add request by city
+        * add forecast
 
 * Common-tech:
     * better message routing

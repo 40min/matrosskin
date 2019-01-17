@@ -109,6 +109,7 @@ def show_news(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=news_phrase, reply_markup=markup)
 
 
+@run_async
 def subscribe(bot, update):
     logger.info(f'News: subscribed user {update.message.from_user.username}')
     chat_id = update.message.chat_id
@@ -121,6 +122,7 @@ def subscribe(bot, update):
     )
 
 
+@run_async
 def unsubscribe(bot, update):
     logger.info(f'News: unsubscribed user {update.message.from_user.username}')
     chat_id = update.message.chat_id
