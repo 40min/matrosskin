@@ -14,9 +14,8 @@
     
 * Weather
     * Better approve button
-    * integrate with dialogflow
-        * add request by city
-        * add forecast
+       * add request by city
+       * add forecast
         
 * Talks
     * Weather integration (use action instead of text)

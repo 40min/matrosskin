@@ -97,7 +97,6 @@ def weather_message(bot, coords, chat_id):
     bot.send_message(chat_id=chat_id, text=message_answer)
 
 
-@run_async
 def weather_request_with_update_location(bot, update):
     logger.info('/weather_loc command')
 
@@ -108,7 +107,7 @@ def weather_request_with_update_location(bot, update):
         reply_markup=request_geo_markup
     )
 
-@run_async
+
 def weather_request(bot, update):
     logger.info('/weather command')
 
@@ -120,6 +119,16 @@ def weather_request(bot, update):
         weather_message(bot, coords, chat_id)
     else:
         weather_request_with_update_location(bot, update)
+
+
+@run_async
+def weather_request_async(bot, update):
+    weather_request(bot, update)
+
+
+@run_async
+def weather_request_with_update_location_async(bot, update):
+    weather_request_with_update_location(bot, update)
 
 
 @run_async
@@ -137,7 +146,7 @@ def get_location(bot, update, user_data):
 class WeatherPaw(Paw):
     name = 'weather'
     handlers = {
-        CommandHandler(['weather', 'w'], weather_request),
-        CommandHandler(['weather_loc', 'wl'], weather_request_with_update_location),
+        CommandHandler(['weather', 'w'], weather_request_async),
+        CommandHandler(['weather_loc', 'wl'], weather_request_with_update_location_async),
         MessageHandler(Filters.location, get_location, pass_user_data=True)
     }
