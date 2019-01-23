@@ -26,17 +26,20 @@ class ProcessingResult:
 
 logger = logging.getLogger(__name__)
 agents = {
+    'weather': config['df_client_weather_token'],
     'smalltalk': config['df_client_smalltalk_token'],
-    'weather': config['df_client_weather_token']
 }
 
 
-def get_news_action(bot, update):
+def get_news_action(bot, update, params):
     return get_news()
 
 
-def get_weather_action(bot, update):
-    weather_request(bot, update)
+def get_weather_action(bot, update, params):
+    city = None
+    if params and params.get('address'):
+        city = params.get('address').get('city')
+    weather_request(bot, update, city)
     return None
 
 
@@ -46,10 +49,10 @@ paws_mapping = {
 }
 
 
-def proceed_action(bot, update, action):
+def proceed_action(bot, update, action, params=None):
     action = action.split('.')[0]
     if action in paws_mapping:
-        answer_txt = paws_mapping[action](bot, update)
+        answer_txt = paws_mapping[action](bot, update, params)
         return ProcessingResult(answer_txt=answer_txt, processed=True)
     return ProcessingResult()
 
@@ -62,7 +65,9 @@ def ask_to_agent(bot, update, agent_name):
     request.query = update.message.text
     response_json = json.loads(request.getresponse().read().decode('utf-8'))
     if response_json['result'].get('action'):
-        result = proceed_action(bot, update, response_json['result']['action'])
+        result = proceed_action(
+            bot, update, response_json['result']['action'], response_json['result'].get('parameters')
+        )
         if result.processed:
             return result
 

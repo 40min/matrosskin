@@ -1,8 +1,3 @@
-from collections import namedtuple
-
-Coordinates = namedtuple('Coordinates', ['latitude', 'longitude'])
-
-
 class WeatherDay:
 
     def __init__(self, weather_lookup):
