@@ -4,6 +4,7 @@ from bot import dispatcher
 from bot import updater
 
 from paws import get_my_paws
+from utils.city_to_geoid import check_and_create_mapping
 
 logging.basicConfig(format='[%(asctime)s][%(name)s] %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,6 +16,7 @@ def error_callback(bot, update, error):
 
 def main():
     logger.info('starting...')
+    check_and_create_mapping()
 
     job_queue = updater.job_queue
     for paw in get_my_paws():

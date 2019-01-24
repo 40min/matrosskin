@@ -17,8 +17,8 @@ from paws.generic import Paw
 from modules.settings import config
 from modules.storage import (
     Coordinates,
-    save_user_location_to_store,
-    get_user_location_from_store
+    user_data_storage,
+    city_to_geoid_mapping
 )
 from .classes import (
     WeatherDay,
@@ -56,8 +56,11 @@ def get_weather_by_city(city):
     try:
         observation = owm.weather_at_place(city)
     except NotFoundError:
-        test = owm.city_id_registry().locations_for(city_name=city)
-        return WEATHER_NOT_FOUND_MESSAGE
+        city_from_local_mapping = city_to_geoid_mapping.get_city_geoid(city)
+        if not city_from_local_mapping:
+            return WEATHER_NOT_FOUND_MESSAGE
+
+        observation = owm.weather_at_id(city_from_local_mapping)
 
     weather_txt = get_weather_txt(observation, location_name=city)
     return weather_txt
@@ -97,7 +100,7 @@ def weather_request(bot, update, city=None):
         bot.send_message(chat_id=chat_id, text=message_answer)
         return
     else:
-        coords = get_user_location_from_store(username)
+        coords = user_data_storage.get_user_location_from_store(username)
         if coords:
             message_answer = get_weather_by_coords(coords)
             bot.send_message(chat_id=chat_id, text=message_answer)
@@ -123,7 +126,7 @@ def get_location(bot, update, user_data):
     username = update.message.from_user.username
     coords = Coordinates(latitude, longitude)
 
-    save_user_location_to_store(username, coords)
+    user_data_storage.save_user_location_to_store(username, coords)
 
     chat_id = update.message.chat_id
     message_answer = get_weather_by_coords(coords=coords)

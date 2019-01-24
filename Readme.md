@@ -16,7 +16,6 @@
     * Better approve button
        * add forecast
        * minor bug: send location everybody who shares his location
-       * fix not found for non-ru cities in cyrillic
         
 * Talks
     * Weather integration (use action instead of text)
