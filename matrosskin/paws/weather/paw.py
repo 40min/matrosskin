@@ -1,7 +1,11 @@
 import logging
 
 import pyowm
+from pyowm.weatherapi25.observation import Observation
 from pyowm.exceptions.api_response_error import NotFoundError
+
+from telegram.bot import Bot
+from telegram.update import Update
 from telegram.ext.dispatcher import run_async
 from telegram.ext import (
     CommandHandler,
@@ -29,6 +33,9 @@ logger = logging.getLogger(__name__)
 owm = pyowm.OWM(API_key=config['owm_api_key'], language=config['owm_language'])
 
 WEATHER_NOT_FOUND_MESSAGE = 'weather not found'
+WEATHER_SHARE_LOCATION = 'Would you mind sharing your location to show weather?'
+WEATHER_FORECAST_SHARE_LOCATION = 'Would you mind sharing your location to show weather forecast?'
+
 
 request_geo_markup = ReplyKeyboardMarkup(
     [
@@ -37,10 +44,8 @@ request_geo_markup = ReplyKeyboardMarkup(
     one_time_keyboard=True
 )
 
-#fc = owm.three_hours_forecast_at_coords(lat=latitude, lon=longitude)
 
-
-def get_weather_txt(observation, location_name):
+def get_weather_txt(observation: Observation, location_name: str) -> str:
     weather_lookup = observation.get_weather()
     day = WeatherDay(weather_lookup)
 
@@ -52,7 +57,17 @@ def get_weather_txt(observation, location_name):
     return weather_txt
 
 
-def get_weather_by_city(city):
+def get_weather_forecast_txt(observations, location_name: str) -> str:
+    forecast = WeatherForecast(location_name, observations)
+    weather_txt = f"""
+            Weather forecast for location {location_name}
+            {forecast.get_formatted()}
+            """
+
+    return weather_txt
+
+
+def get_weather_by_city(city: str) -> str:
     try:
         observation = owm.weather_at_place(city)
     except NotFoundError:
@@ -66,7 +81,7 @@ def get_weather_by_city(city):
     return weather_txt
 
 
-def get_weather_by_coords(coords):
+def get_weather_by_coords(coords: Coordinates) -> str:
     try:
         observation = owm.weather_at_coords(lat=coords.latitude, lon=coords.longitude)
         location = observation.get_location()
@@ -78,18 +93,33 @@ def get_weather_by_coords(coords):
     return weather_txt
 
 
-def weather_request_with_update_location(bot, update):
+# owm.three_hours_forecast(name='')
+def get_weather_forecast_by_coords(coords: Coordinates) -> str:
+    forecaster = owm.three_hours_forecast_at_coords(lat=coords.latitude, lon=coords.longitude)
+    weathers = forecaster.get_forecast().get_weathers()
+    location = forecaster.get_forecast().get_location()
+    location_txt = f'{location.get_country()} - {location.get_name()}'
+
+    if not forecaster:
+        return WEATHER_NOT_FOUND_MESSAGE
+
+    weather_txt = get_weather_forecast_txt(weathers, location_txt)
+    return weather_txt
+
+
+def weather_request_with_update_location(bot: Bot, update: Update, forecast: bool = False) -> None:
     logger.info('/weather_loc command')
 
+    request_text = WEATHER_FORECAST_SHARE_LOCATION if forecast else WEATHER_SHARE_LOCATION
     chat_id = update.message.chat_id
     bot.send_message(
         chat_id=chat_id,
-        text='Would you mind sharing your location with me?',
+        text=request_text,
         reply_markup=request_geo_markup
     )
 
 
-def weather_request(bot, update, city=None):
+def weather_request(bot: Bot, update: Update, city: str = None, forecast: bool = False) -> None:
     logger.info('/weather command')
 
     username = update.message.from_user.username
@@ -102,25 +132,39 @@ def weather_request(bot, update, city=None):
     else:
         coords = user_data_storage.get_user_location_from_store(username)
         if coords:
-            message_answer = get_weather_by_coords(coords)
+            if forecast:
+                message_answer = get_weather_forecast_by_coords(coords)
+            else:
+                message_answer = get_weather_by_coords(coords)
             bot.send_message(chat_id=chat_id, text=message_answer)
             return
 
-    weather_request_with_update_location(bot, update)
+    weather_request_with_update_location(bot, update, forecast)
+
+
+weather_by_coords_answer_methods = {
+    WEATHER_SHARE_LOCATION: get_weather_by_coords,
+    WEATHER_FORECAST_SHARE_LOCATION: None
+}
 
 
 @run_async
-def weather_request_async(bot, update):
+def weather_request_async(bot: Bot, update: Update) -> None:
     weather_request(bot, update)
 
 
 @run_async
-def weather_request_with_update_location_async(bot, update):
+def weather_forecast_request_async(bot: Bot, update: Update) -> None:
+    weather_request(bot, update, forecast=True)
+
+
+@run_async
+def weather_request_with_update_location_async(bot: Bot, update: Update) -> None:
     weather_request_with_update_location(bot, update)
 
 
 @run_async
-def get_location(bot, update, user_data):
+def get_location(bot: Bot, update: Update, user_data) -> None:
     latitude = update.message.location.latitude
     longitude = update.message.location.longitude
     username = update.message.from_user.username
@@ -128,15 +172,19 @@ def get_location(bot, update, user_data):
 
     user_data_storage.save_user_location_to_store(username, coords)
 
-    chat_id = update.message.chat_id
-    message_answer = get_weather_by_coords(coords=coords)
-    bot.send_message(chat_id=chat_id, text=message_answer)
+    if update.message.reply_to_message.text and \
+            update.message.reply_to_message.text in weather_by_coords_answer_methods:
+        chat_id = update.message.chat_id
+        answer_method = weather_by_coords_answer_methods[update.message.reply_to_message.text]
+        message_answer = answer_method(coords=coords)
+        bot.send_message(chat_id=chat_id, text=message_answer)
 
 
 class WeatherPaw(Paw):
     name = 'weather'
     handlers = {
         CommandHandler(['weather', 'w'], weather_request_async),
+        CommandHandler(['weather', 'wf'], weather_forecast_request_async),
         CommandHandler(['weather_loc', 'wl'], weather_request_with_update_location_async),
         MessageHandler(Filters.location, get_location, pass_user_data=True)
     }
