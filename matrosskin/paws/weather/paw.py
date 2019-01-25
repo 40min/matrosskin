@@ -47,7 +47,7 @@ request_geo_markup = ReplyKeyboardMarkup(
 
 def get_weather_txt(observation: Observation, location_name: str) -> str:
     weather_lookup = observation.get_weather()
-    day = WeatherDay(weather_lookup)
+    day = WeatherDay.   create_from_weather_lookup(weather_lookup)
 
     weather_txt = f"""
         Weather for location {location_name}
@@ -60,10 +60,8 @@ def get_weather_txt(observation: Observation, location_name: str) -> str:
 def get_weather_forecast_txt(observations, location_name: str) -> str:
     forecast = WeatherForecast(location_name, observations)
     weather_txt = f"""
-            Weather forecast for location {location_name}
             {forecast.get_formatted()}
             """
-
     return weather_txt
 
 
@@ -96,14 +94,30 @@ def get_weather_by_coords(coords: Coordinates) -> str:
 # owm.three_hours_forecast(name='')
 def get_weather_forecast_by_coords(coords: Coordinates) -> str:
     forecaster = owm.three_hours_forecast_at_coords(lat=coords.latitude, lon=coords.longitude)
-    weathers = forecaster.get_forecast().get_weathers()
-    location = forecaster.get_forecast().get_location()
-    location_txt = f'{location.get_country()} - {location.get_name()}'
-
     if not forecaster:
         return WEATHER_NOT_FOUND_MESSAGE
 
+    weathers = forecaster.get_forecast().get_weathers()
+    location = forecaster.get_forecast().get_location()
+    location_txt = f'{location.get_country()} - {location.get_name()}'
     weather_txt = get_weather_forecast_txt(weathers, location_txt)
+
+    return weather_txt
+
+
+def get_weather_forecast_by_city(city: str) -> str:
+    forecaster = owm.three_hours_forecast(name=city)
+    if not forecaster:
+        geoid = city_to_geoid_mapping.get_city_geoid(city)
+        if not geoid:
+            return WEATHER_NOT_FOUND_MESSAGE
+        forecaster = owm.three_hours_forecast_at_id(geoid)
+        if not forecaster:
+            return WEATHER_NOT_FOUND_MESSAGE
+
+    weathers = forecaster.get_forecast().get_weathers()
+    weather_txt = get_weather_forecast_txt(weathers, location_name=city)
+
     return weather_txt
 
 
@@ -126,7 +140,10 @@ def weather_request(bot: Bot, update: Update, city: str = None, forecast: bool =
     chat_id = update.message.chat_id
 
     if city:
-        message_answer = get_weather_by_city(city)
+        if forecast:
+            message_answer = get_weather_forecast_by_city(city)
+        else:
+            message_answer = get_weather_by_city(city)
         bot.send_message(chat_id=chat_id, text=message_answer)
         return
     else:
@@ -144,7 +161,7 @@ def weather_request(bot: Bot, update: Update, city: str = None, forecast: bool =
 
 weather_by_coords_answer_methods = {
     WEATHER_SHARE_LOCATION: get_weather_by_coords,
-    WEATHER_FORECAST_SHARE_LOCATION: None
+    WEATHER_FORECAST_SHARE_LOCATION: get_weather_forecast_by_coords
 }
 
 
@@ -160,7 +177,12 @@ def weather_forecast_request_async(bot: Bot, update: Update) -> None:
 
 @run_async
 def weather_request_with_update_location_async(bot: Bot, update: Update) -> None:
-    weather_request_with_update_location(bot, update)
+    weather_request_with_update_location(bot, update)\
+
+
+@run_async
+def weather_forecst_request_with_update_location_async(bot: Bot, update: Update) -> None:
+    weather_request_with_update_location(bot, update, forecast=True)
 
 
 @run_async
@@ -186,5 +208,6 @@ class WeatherPaw(Paw):
         CommandHandler(['weather', 'w'], weather_request_async),
         CommandHandler(['weather', 'wf'], weather_forecast_request_async),
         CommandHandler(['weather_loc', 'wl'], weather_request_with_update_location_async),
+        CommandHandler(['weather_loc', 'wfl'], weather_forecst_request_with_update_location_async),
         MessageHandler(Filters.location, get_location, pass_user_data=True)
     }

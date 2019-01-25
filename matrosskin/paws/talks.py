@@ -39,7 +39,8 @@ def get_weather_action(bot, update, params):
     city = None
     if params and params.get('address'):
         city = params.get('address').get('city')
-    weather_request(bot, update, city)
+    forecast = params.get('forecast', False)
+    weather_request(bot, update, city, forecast=forecast)
     return None
 
 
