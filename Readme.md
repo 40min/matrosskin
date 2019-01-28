@@ -14,8 +14,6 @@
     
 * Weather
     * Better approve button
-       * add forecast
-       * minor bug: send location everybody who shares his location
         
 * Talks
     * Weather integration (use action instead of text)
