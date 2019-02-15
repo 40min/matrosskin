@@ -5,3 +5,5 @@ pyyaml
 redis~=3.0.1
 pyowm~=2.10.0
 apiai~=1.2.3
+git+https://github.com/40min/bash-org-sentiment-analyser.git#egg=bash-org-sentiment-analyser
+

@@ -17,6 +17,8 @@ from telegram import (
 from analner.news_maker import FunMaker
 from analner.head_grab import HeadGrab, TARGET_URL
 
+from bash_org_sentiment_analyser.classifier import classifier
+
 from modules.settings import config
 from modules.storage import redis_storage
 
@@ -29,6 +31,8 @@ DEFAULT_NEWS = 'no news at all (((('
 SUBSCRIBE_PREFIX = 'newssubscribe'
 DEFAULT_NEWS_INTERVAL = 5
 RATING_FILENAME = 'rated_news.csv'
+NEWS_FILTERING = config.get('news_filtering')
+ATTEMPTS_TO_FILTER = config.get('attempts_to_get_filtered', 100)
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +46,16 @@ dropbox_token = config.get('dropbox_token')
 fun_generator = FunMaker(data_path, dropbox_token)
 head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
 rating_file_path = f"{config['data_path']}/{RATING_FILENAME}"
+
+
+def train_classifier():
+    classifier.train()
+    classifier.show_train_stats()
+    classifier.save_model()
+
+
+if NEWS_FILTERING and not classifier.load_model():
+    train_classifier()
 
 
 def get_storage_subscribe_key(chat_id):
@@ -106,9 +120,20 @@ def subscribed_generate_callback(bot, job):
 
 
 def get_news():
-    phrases = fun_generator.make_phrases()
-    news_phrase = phrases[0] if phrases else DEFAULT_NEWS
-    return news_phrase
+    if NEWS_FILTERING:
+        for i in range(0, ATTEMPTS_TO_FILTER):
+            phrases = fun_generator.make_phrases()
+            results = classifier.check_phrases(phrases)
+            if results[0]:
+                logger.info(f"Classify as funny: {phrases[0]}")
+                return phrases[0]
+            else:
+                logger.info(f"Classify as not funny: {phrases[0]}")
+    else:
+        phrases = fun_generator.make_phrases()
+        if phrases:
+            return phrases[0]
+    return DEFAULT_NEWS
 
 
 @run_async
@@ -139,6 +164,14 @@ def unsubscribe(bot, update):
     key = get_storage_subscribe_key(chat_id)
     redis_storage.delete(key)
 
+@run_async
+def retrain_classifier(bot, update):
+    owner = config.get('owner')
+    user_from = update.message.from_user.username
+    if NEWS_FILTERING and owner and user_from == owner:
+        logger.info(f'Attempt to retrain classifier')
+        train_classifier()
+
 
 class NewsPaw(Paw):
     name = 'Analner news'
@@ -146,6 +179,7 @@ class NewsPaw(Paw):
         CommandHandler(['news', 'n'], show_news),
         CommandHandler(['subs'], subscribe),
         CommandHandler(['unsubs'], unsubscribe),
+        CommandHandler(['rc'], retrain_classifier),
         CallbackQueryHandler(rate_callback)
     }
     jobs = {
