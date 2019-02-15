@@ -6,7 +6,15 @@
         - mixed with chat-model
         - triggered by words
     * Rate generated news
+        * rate as polling
     * Add education of new model based on chat
+    * Add news squash-by-days utility
+    * Add filter fun/not-fun
+        * add classifier
+        * filter output
+        * scheduled re-education of classifier based on ratings
+        * backup ratings to dropbox
+    * Add merge news tool
 
 * Mushrooms
     * Receive/save picture

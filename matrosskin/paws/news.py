@@ -28,6 +28,7 @@ from .generic import (
 DEFAULT_NEWS = 'no news at all (((('
 SUBSCRIBE_PREFIX = 'newssubscribe'
 DEFAULT_NEWS_INTERVAL = 5
+RATING_FILENAME = 'rated_news.csv'
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,7 @@ dropbox_token = config.get('dropbox_token')
 
 fun_generator = FunMaker(data_path, dropbox_token)
 head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
+rating_file_path = f"{config['data_path']}/{RATING_FILENAME}"
 
 
 def get_storage_subscribe_key(chat_id):
@@ -75,10 +77,13 @@ def grab_news_callback(bot, job):
         fun_generator.reload_model_from_txt()
 
 
+@run_async
 def rate_callback(bot, update):
     query = update.callback_query
-    # stopping here: put results to chat
-    # "Selected option: {}".format(query.data)
+
+    with open(rating_file_path, 'a', encoding='utf-8') as f:
+        f.write(f"{query.message['text']};{query.data}\n")
+
     bot.edit_message_text(text=query.message['text'],
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
