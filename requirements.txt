@@ -1,6 +1,6 @@
 --extra-index-url https://test.pypi.org/simple/
 python-telegram-bot>=10.1.0
-analner>=0.0.10
+analner==0.0.11
 pyyaml
 redis~=3.0.1
 pyowm~=2.10.0

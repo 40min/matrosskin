@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import (
     datetime,
     timedelta
@@ -43,19 +44,38 @@ if not data_path:
 
 dropbox_token = config.get('dropbox_token')
 
-fun_generator = FunMaker(data_path, dropbox_token)
 head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
 rating_file_path = f"{config['data_path']}/{RATING_FILENAME}"
+classifier.add_rated_csv_file(rating_file_path)
 
 
-def train_classifier():
+def train_classifier(make_cleanup: bool = False) -> str:
+    if make_cleanup:
+        classifier.cleanup()
     classifier.train()
-    classifier.show_train_stats()
     classifier.save_model()
+    stats = classifier.get_train_stats()
+    logger.info(stats)
+    return stats
 
 
 if NEWS_FILTERING and not classifier.load_model():
     train_classifier()
+
+
+def get_rated_news_as_list() -> []:
+    res = []
+    if os.path.isfile(rating_file_path):
+        with open(rating_file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                txt, label = line.split(";")
+                if int(label) == 1:
+                    res.append(txt)
+    return res
+
+
+rated_news = get_rated_news_as_list()
+fun_generator = FunMaker(data_path, dropbox_token, rated_news)
 
 
 def get_storage_subscribe_key(chat_id):
@@ -164,13 +184,15 @@ def unsubscribe(bot, update):
     key = get_storage_subscribe_key(chat_id)
     redis_storage.delete(key)
 
+
 @run_async
 def retrain_classifier(bot, update):
     owner = config.get('owner')
     user_from = update.message.from_user.username
     if NEWS_FILTERING and owner and user_from == owner:
         logger.info(f'Attempt to retrain classifier')
-        train_classifier()
+        stats = train_classifier(make_cleanup=True)
+        bot.send_message(chat_id=update.message.chat_id, text=stats)
 
 
 class NewsPaw(Paw):
