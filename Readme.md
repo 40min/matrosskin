@@ -32,5 +32,6 @@
     * create help-page with commands-list
     * add suspend/resume commands
     * raise broadcast messages for subscribers
-    
+    * refactor config.yaml
+    * refactor data and dropbox sync to store data files in folders
     

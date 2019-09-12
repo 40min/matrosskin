@@ -1,4 +1,4 @@
-FROM python:3.6.8-jessie
+FROM python:3.7.4-stretch
 
 WORKDIR /usr/src/app
 
@@ -11,5 +11,7 @@ COPY ./matrosskin ./matrosskin
 COPY ./config.yaml ./config.yaml
 
 RUN mkdir ./data
+
+RUN python -m nltk.downloader stopwords
 
 CMD [ "python", "./matrosskin/app.py" ]
