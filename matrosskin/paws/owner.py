@@ -1,7 +1,8 @@
 import logging
 import threading
 
-from telegram.ext import CommandHandler
+from telegram import Update
+from telegram.ext import CommandHandler, CallbackContext
 from telegram.ext.dispatcher import run_async
 
 from bot import updater
@@ -17,12 +18,13 @@ def shutdown():
 
 
 @run_async
-def on_exit(bot, update):
+def on_exit(update: Update, context: CallbackContext):
     owner = config.get('owner')
     user_from = update.message.from_user.username
     logger.info(f"User {user_from} requests exit")
     if user_from == owner:
         logger.info('Exiting ...')
+        context.bot.send_message(chat_id=update.message.chat_id, text="Buy-buy :)")
         threading.Thread(target=shutdown).start()
 
 

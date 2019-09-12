@@ -34,4 +34,27 @@
     * raise broadcast messages for subscribers
     * refactor config.yaml
     * refactor data and dropbox sync to store data files in folders
+    * Update telegram-bot lib: https://github.com/python-telegram-bot/python-telegram-bot/wiki/Transition-guide-to-Version-12.0
+    * Remove dependency from certain files: rated_news.csv, rated_bash
+    * Update dialogflow lib: https://cloud.google.com/dialogflow/docs/reference/libraries/python
+    
+# AWS prepare
+```bash
+sudo yum update -y
+sudo yum install -y docker git
+
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+# relogin after
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+
+git clone https://github.com/40min/matrosskin.git
+cd matrosskin
+git checkout dev
+# create config.yml
+
+
+```
     

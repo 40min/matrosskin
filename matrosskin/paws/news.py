@@ -5,15 +5,16 @@ from datetime import (
     timedelta
 )
 
+from telegram.ext.dispatcher import run_async
 from telegram.ext import (
     CommandHandler,
-    CallbackQueryHandler
+    CallbackQueryHandler,
+    CallbackContext
 )
-from telegram.ext.dispatcher import run_async
 from telegram import (
     InlineKeyboardButton,
-    InlineKeyboardMarkup
-)
+    InlineKeyboardMarkup,
+    Update)
 
 from analner.news_maker import FunMaker
 from analner.head_grab import HeadGrab, TARGET_URL
@@ -103,7 +104,7 @@ def get_rate_markup():
     return InlineKeyboardMarkup(keyboard)
 
 
-def grab_news_callback(bot, job):
+def grab_news_callback(context: CallbackContext):
     now = datetime.now()
     logger.info('News: Grabbing news {}' . format(now.strftime('%Y-%m-%d %H:%M:%S')))
     news_added = head_grab.run()
@@ -112,18 +113,18 @@ def grab_news_callback(bot, job):
 
 
 @run_async
-def rate_callback(bot, update):
+def rate_callback(update: Update, context: CallbackContext):
     query = update.callback_query
 
     with open(rating_file_path, 'a', encoding='utf-8') as f:
         f.write(f"{query.message['text']};{query.data}\n")
 
-    bot.edit_message_text(text=query.message['text'],
+    context.bot.edit_message_text(text=query.message['text'],
                           chat_id=query.message.chat_id,
                           message_id=query.message.message_id)
 
 
-def subscribed_generate_callback(bot, job):
+def subscribed_generate_callback(context: CallbackContext):
     for key in redis_storage.scan_iter(match=f'{SUBSCRIBE_PREFIX}_*'):
         key = str(key, 'utf-8')
         _, chat_id = key.split('_')
@@ -135,7 +136,7 @@ def subscribed_generate_callback(bot, job):
             fun_txt = fun_generator.make_phrases()
             if fun_txt:
                 markup = get_rate_markup() if learning_mode else None
-                bot.send_message(chat_id=chat_id, text=fun_txt[0], reply_markup=markup)
+                context.bot.send_message(chat_id=chat_id, text=fun_txt[0], reply_markup=markup)
             redis_storage.hset(key, 'last_generated', int(datetime.utcnow().timestamp()))
 
 
@@ -157,15 +158,15 @@ def get_news():
 
 
 @run_async
-def show_news(bot, update):
+def show_news(update: Update, context: CallbackContext):
     logger.info(f'News: single news request for user {update.message.from_user.username}')
     news_phrase = get_news()
     markup = get_rate_markup() if learning_mode else None
-    bot.send_message(chat_id=update.message.chat_id, text=news_phrase, reply_markup=markup)
+    context.bot.send_message(chat_id=update.message.chat_id, text=news_phrase, reply_markup=markup)
 
 
 @run_async
-def subscribe(bot, update):
+def subscribe(update: Update, context: CallbackContext):
     logger.info(f'News: subscribed user {update.message.from_user.username}')
     chat_id = update.message.chat_id
     key = get_storage_subscribe_key(chat_id)
@@ -178,7 +179,7 @@ def subscribe(bot, update):
 
 
 @run_async
-def unsubscribe(bot, update):
+def unsubscribe(update: Update, context: CallbackContext):
     logger.info(f'News: unsubscribed user {update.message.from_user.username}')
     chat_id = update.message.chat_id
     key = get_storage_subscribe_key(chat_id)
@@ -186,13 +187,13 @@ def unsubscribe(bot, update):
 
 
 @run_async
-def retrain_classifier(bot, update):
+def retrain_classifier(update: Update, context: CallbackContext):
     owner = config.get('owner')
     user_from = update.message.from_user.username
     if NEWS_FILTERING and owner and user_from == owner:
         logger.info(f'Attempt to retrain classifier')
         stats = train_classifier(make_cleanup=True)
-        bot.send_message(chat_id=update.message.chat_id, text=stats)
+        context.bot.send_message(chat_id=update.message.chat_id, text=stats)
 
 
 class NewsPaw(Paw):

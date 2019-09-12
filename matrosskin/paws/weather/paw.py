@@ -6,8 +6,8 @@ from telegram.ext.dispatcher import run_async
 from telegram.ext import (
     CommandHandler,
     MessageHandler,
-    Filters
-)
+    Filters,
+    CallbackContext)
 from telegram import (
     KeyboardButton,
     ReplyKeyboardMarkup
@@ -76,7 +76,7 @@ def weather_request(bot: Bot, update: Update, city: str = None, period_forecast:
 
 
 @run_async
-def get_location(bot: Bot, update: Update, user_data) -> None:
+def get_location(update: Update, context: CallbackContext) -> None:
     latitude = update.message.location.latitude
     longitude = update.message.location.longitude
     username = update.message.from_user.username
@@ -88,27 +88,27 @@ def get_location(bot: Bot, update: Update, user_data) -> None:
             update.message.reply_to_message.text in weather_by_coords_mapping:
         chat_id = update.message.chat_id
         message_answer = weather_by_coords_mapping[update.message.reply_to_message.text].get_by_coords(coords=coords)
-        bot.send_message(chat_id=chat_id, text=message_answer)
+        context.bot.send_message(chat_id=chat_id, text=message_answer)
 
 
 @run_async
-def weather_request_async(bot: Bot, update: Update) -> None:
-    weather_request(bot, update)
+def weather_request_async(update: Update, context: CallbackContext) -> None:
+    weather_request(context.bot, update)
 
 
 @run_async
-def weather_forecast_request_async(bot: Bot, update: Update) -> None:
-    weather_request(bot, update, period_forecast=True)
+def weather_forecast_request_async(update: Update, context: CallbackContext) -> None:
+    weather_request(context.bot, update, period_forecast=True)
 
 
 @run_async
-def weather_request_with_update_location_async(bot: Bot, update: Update) -> None:
-    weather_request_with_update_location(bot, update)\
+def weather_request_with_update_location_async(update: Update, context: CallbackContext) -> None:
+    weather_request_with_update_location(context.bot, update)\
 
 
 @run_async
-def weather_forecst_request_with_update_location_async(bot: Bot, update: Update) -> None:
-    weather_request_with_update_location(bot, update, forecast=True)
+def weather_forecst_request_with_update_location_async(update: Update, context: CallbackContext) -> None:
+    weather_request_with_update_location(context.bot, update, forecast=True)
 
 
 class WeatherPaw(Paw):
@@ -118,5 +118,5 @@ class WeatherPaw(Paw):
         CommandHandler(['weather', 'wf'], weather_forecast_request_async),
         CommandHandler(['weather_loc', 'wl'], weather_request_with_update_location_async),
         CommandHandler(['weather_loc', 'wfl'], weather_forecst_request_with_update_location_async),
-        MessageHandler(Filters.location, get_location, pass_user_data=True)
+        MessageHandler(Filters.location, get_location)
     }

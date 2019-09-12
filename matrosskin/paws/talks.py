@@ -3,10 +3,11 @@ import json
 from collections import namedtuple
 
 import apiai
+from telegram import Update
 from telegram.ext import (
     MessageHandler,
-    Filters
-)
+    Filters,
+    CallbackContext)
 from telegram.ext.dispatcher import run_async
 
 from .generic import Paw
@@ -79,14 +80,14 @@ def ask_to_agent(bot, update, agent_name):
 
 
 @run_async
-def proceed_phrase(bot, update):
+def proceed_phrase(update: Update, context: CallbackContext):
     for agent in agents:
-        result = ask_to_agent(bot, update, agent)
+        result = ask_to_agent(context.bot, update, agent)
         if result.processed:
             if result.answer_txt:
-                bot.send_message(chat_id=update.message.chat_id, text=result.answer_txt)
+                context.bot.send_message(chat_id=update.message.chat_id, text=result.answer_txt)
             return
-    bot.send_message(chat_id=update.message.chat_id, text=DONT_UNDERSTAND_PHRASE)
+    context.bot.send_message(chat_id=update.message.chat_id, text=DONT_UNDERSTAND_PHRASE)
 
 
 class TalksPaw(Paw):
