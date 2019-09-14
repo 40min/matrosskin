@@ -34,9 +34,7 @@
     * raise broadcast messages for subscribers
     * refactor config.yaml
     * refactor data and dropbox sync to store data files in folders
-    * Update telegram-bot lib: https://github.com/python-telegram-bot/python-telegram-bot/wiki/Transition-guide-to-Version-12.0
     * Remove dependency from certain files: rated_news.csv, rated_bash
-    * Update dialogflow lib: https://cloud.google.com/dialogflow/docs/reference/libraries/python
     
 # AWS prepare
 ```bash
@@ -53,8 +51,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 git clone https://github.com/40min/matrosskin.git
 cd matrosskin
 git checkout dev
-# create config.yml
 
+# create config.yml
+# copy you google cloud key into the file gcp_key.json into the root of the project
 
 ```
     

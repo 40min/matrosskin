@@ -106,7 +106,6 @@ config.yaml
 
 #pycharm
 .idea/
-
 data
-
 .DS_Store
+*.json

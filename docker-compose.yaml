@@ -10,6 +10,9 @@ services:
     build: .
     volumes:
       - ./data:/usr/src/app/data
+      - ./matrosskin:/usr/src/app/matrosskin
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=./gcp_key.json
     depends_on:
       - redis
 

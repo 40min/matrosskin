@@ -7,8 +7,8 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install dropbox
 
-COPY ./matrosskin ./matrosskin
 COPY ./config.yaml ./config.yaml
+COPY ./gcp_key.json ./gcp_key.json
 
 RUN mkdir ./data
 
