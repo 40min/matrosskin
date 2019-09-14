@@ -34,7 +34,7 @@ SUBSCRIBE_PREFIX = 'newssubscribe'
 DEFAULT_NEWS_INTERVAL = 5
 RATING_FILENAME = 'rated_news.csv'
 NEWS_FILTERING = config.news_filtering
-ATTEMPTS_TO_FILTER = config.news_attempts_to_get_filtered
+ATTEMPTS_TO_FILTER = int(config.news_attempts_to_get_filtered)
 
 logger = logging.getLogger(__name__)
 
