@@ -32,7 +32,6 @@
     * create help-page with commands-list
     * add suspend/resume commands
     * raise broadcast messages for subscribers
-    * refactor config.yaml
     * refactor data and dropbox sync to store data files in folders
     * Remove dependency from certain files: rated_news.csv, rated_bash
     
@@ -52,7 +51,8 @@ git clone https://github.com/40min/matrosskin.git
 cd matrosskin
 git checkout dev
 
-# create config.yml
+cp .env.example .env
+# edit .env
 # copy you google cloud key into the file gcp_key.json into the root of the project
 
 ```

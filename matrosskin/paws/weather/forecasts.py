@@ -8,7 +8,7 @@ from pyowm.weatherapi25.observation import Observation
 from pyowm.exceptions.api_response_error import NotFoundError
 
 
-from modules.settings import config
+import config
 from modules.storage import (
     Coordinates,
     city_to_geoid_mapping
@@ -18,7 +18,7 @@ from .formatters import (
     WeatherForecastFormatter
 )
 
-owm = pyowm.OWM(API_key=config['owm_api_key'], language=config['owm_language'])
+owm = pyowm.OWM(API_key=config.owm_api_key, language=config.owm_language)
 
 WEATHER_NOT_FOUND_MESSAGE = 'weather not found'
 

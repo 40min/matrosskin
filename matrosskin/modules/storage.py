@@ -2,12 +2,11 @@ from collections import namedtuple
 from typing import Optional
 
 import redis
-
-from modules.settings import config
+import config
 
 Coordinates = namedtuple('Coordinates', ['latitude', 'longitude'])
 
-pool = redis.ConnectionPool(host=config['host'], port=config['port'], db=config['db'])
+pool = redis.ConnectionPool(host=config.redis_host, port=config.redis_port, db=config.redis_db)
 redis_storage = redis.Redis(connection_pool=pool)
 
 

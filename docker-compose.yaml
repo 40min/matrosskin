@@ -11,8 +11,10 @@ services:
     volumes:
       - ./data:/usr/src/app/data
       - ./matrosskin:/usr/src/app/matrosskin
+    env_file:
+      - .env
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=./gcp_key.json
+      - redis_host=redis
     depends_on:
       - redis
 

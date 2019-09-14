@@ -16,7 +16,7 @@ from paws.generic import Paw
 from paws.news import get_news
 from paws.weather.paw import weather_request
 from paws.talks.session_storage import session_storage
-from modules.settings import config
+import config
 
 DONT_UNDERSTAND_PHRASE = 'Mrrr .... ?'
 IDK_ANSWER = 'idk'
@@ -30,8 +30,8 @@ class ProcessingResult:
 
 logger = logging.getLogger(__name__)
 agents = {
-    'weather': config['df_weather_project_id'],
-    'smalltalk': config['df_small_talk_project_id'],
+    'weather': config.df_weather_project_id,
+    'smalltalk': config.df_small_talk_project_id,
 }
 df_session_client = dialogflow.SessionsClient()
 
@@ -70,7 +70,7 @@ def proceed_action(bot, update, query_result: QueryResult):
 def ask_agent(bot, update, agent_name):
     project_id = agents[agent_name]
     session_id = session_storage.get(update.message.from_user.username)
-    language_code = config["lang"]
+    language_code = config.lang
 
     session = df_session_client.session_path(project_id, session_id)
     text_input = dialogflow.types.TextInput(text=update.message.text, language_code=language_code)

@@ -21,7 +21,7 @@ from analner.head_grab import HeadGrab, TARGET_URL
 
 from bash_org_sentiment_analyser.classifier import classifier
 
-from modules.settings import config
+import config
 from modules.storage import redis_storage
 
 from .generic import (
@@ -33,20 +33,20 @@ DEFAULT_NEWS = 'no news at all (((('
 SUBSCRIBE_PREFIX = 'newssubscribe'
 DEFAULT_NEWS_INTERVAL = 5
 RATING_FILENAME = 'rated_news.csv'
-NEWS_FILTERING = config.get('news_filtering')
-ATTEMPTS_TO_FILTER = config.get('attempts_to_get_filtered', 100)
+NEWS_FILTERING = config.news_filtering
+ATTEMPTS_TO_FILTER = config.news_attempts_to_get_filtered
 
 logger = logging.getLogger(__name__)
 
-learning_mode = config.get('learning_mode', 0)
-data_path = config['data_path']
+learning_mode = config.news_learning_mode
+data_path = config.data_path
 if not data_path:
     raise Exception("Please setup path to storing data [data_path] var")
 
-dropbox_token = config.get('dropbox_token')
+dropbox_token = config.dropbox_token
 
 head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
-rating_file_path = f"{config['data_path']}/{RATING_FILENAME}"
+rating_file_path = f"{data_path}/{RATING_FILENAME}"
 classifier.add_rated_csv_file(rating_file_path)
 
 
@@ -188,7 +188,7 @@ def unsubscribe(update: Update, context: CallbackContext):
 
 @run_async
 def retrain_classifier(update: Update, context: CallbackContext):
-    owner = config.get('owner')
+    owner = config.owner
     user_from = update.message.from_user.username
     if NEWS_FILTERING and owner and user_from == owner:
         logger.info(f'Attempt to retrain classifier')
