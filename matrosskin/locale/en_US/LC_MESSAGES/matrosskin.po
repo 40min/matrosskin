@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2019-09-15 22:45+0300\n"
+"PO-Revision-Date: 2019-09-15 22:49+0300\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: matrosskin\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Language: ru\n"
+"X-Poedit-SearchPath-0: .\n"
+
+
+#: paws/weather/formatters.py:93
+#, python-brace-format
+msgid "Weather for {city}"
+msgstr "Weather for {city}"
+
+#: paws/weather/paw.py:30
+msgid "Would you mind sharing your location to show weather?"
+msgstr "Would you mind sharing your location to show weather?"
+
+#: paws/weather/paw.py:31
+msgid "Would you mind sharing your location to show weather forecast?"
+msgstr "Would you mind sharing your location to show weather forecast?"
+
+
+#: ./matrosskin/paws/weather/forecasts.py:24
+msgid "weather for location is unavailable"
+msgstr "weather for location is unavailable"
+
+#: ./matrosskin/paws/weather/formatters.py:58
+msgid ""
+"\n"
+"- ref time: {ref_time}\n"
+"- temperature :thermometer:: {temperature}\n"
+"- condition: {condition}\n"
+"- humidity: {humidity}\n"
+"- wind speed  🌬: {wind_speed} mps\n"
+"- wind gusts: {wind_gusts}\n"
+"- pressure: {pressure}\n"
+"        "
+msgstr ""
+"\n"
+"- ref time: {ref_time}\n"
+"- temperature :thermometer:: {temperature}\n"
+"- condition: {condition}\n"
+"- humidity: {humidity}\n"
+"- wind speed  🌬: {wind_speed} mps\n"
+"- wind gusts: {wind_gusts}\n"
+"- pressure: {pressure}\n"
+"        "

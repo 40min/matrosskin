@@ -17,10 +17,11 @@ from .formatters import (
     WeatherDayFormatter,
     WeatherForecastFormatter
 )
+from matrosskin.l10n import _
 
 owm = pyowm.OWM(API_key=config.owm_api_key, language=config.owm_language)
 
-WEATHER_NOT_FOUND_MESSAGE = 'weather not found'
+WEATHER_NOT_FOUND_MESSAGE = _("weather for location is unavailable")
 
 
 class Forecast(ABC):
@@ -72,10 +73,11 @@ class DayForecast(Forecast):
         weather_lookup = observation.get_weather()
         day = WeatherDayFormatter.create_from_weather_lookup(weather_lookup)
 
+        phrase = _("Weather for {city}").format(city=location_name)
         weather_txt = f"""
-            Weather for location {location_name}
-            {day.get_formatted()}
-            """
+                    {phrase}
+                    {day.get_formatted()}
+                """
 
         return weather_txt
 

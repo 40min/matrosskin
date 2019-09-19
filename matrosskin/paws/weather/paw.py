@@ -13,6 +13,7 @@ from telegram import (
     ReplyKeyboardMarkup
 )
 
+from matrosskin.l10n import _
 from paws.generic import Paw
 from modules.storage import (
     Coordinates,
@@ -26,8 +27,8 @@ from .forecasts import (
 
 logger = logging.getLogger(__name__)
 
-WEATHER_SHARE_LOCATION = 'Would you mind sharing your location to show weather?'
-WEATHER_FORECAST_SHARE_LOCATION = 'Would you mind sharing your location to show weather forecast?'
+WEATHER_SHARE_LOCATION = _("Would you mind sharing your location to show weather?")
+WEATHER_FORECAST_SHARE_LOCATION = _("Would you mind sharing your location to show weather forecast?")
 
 weather_by_coords_mapping = {
     WEATHER_SHARE_LOCATION: day_forecast,
@@ -114,9 +115,9 @@ def weather_forecst_request_with_update_location_async(update: Update, context: 
 class WeatherPaw(Paw):
     name = 'weather'
     handlers = {
-        CommandHandler(['weather', 'w'], weather_request_async),
-        CommandHandler(['weather', 'wf'], weather_forecast_request_async),
-        CommandHandler(['weather_loc', 'wl'], weather_request_with_update_location_async),
-        CommandHandler(['weather_loc', 'wfl'], weather_forecst_request_with_update_location_async),
+        CommandHandler(['w'], weather_request_async),
+        CommandHandler(['wf'], weather_forecast_request_async),
+        CommandHandler(['wl'], weather_request_with_update_location_async),
+        CommandHandler(['wfl'], weather_forecst_request_with_update_location_async),
         MessageHandler(Filters.location, get_location)
     }

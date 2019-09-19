@@ -25,11 +25,24 @@
         
 * Talks
     * Weather integration (use action instead of text)
+    
+* Translations
+    * integration with Google API
+    * language select
+    * translate just text
+    * translate from image-photo
+    
+* FriendsFinder
+    * One user search another with nickname
+    * Bot should save user's nickname->chat_id mapping
+    * If user search another and chat_id is present then show
+    searchable user request to share coordinates with req_time/nickname 
+    from another user
+    * open google-maps on phone with coordinates: see here https://developers.google.com/maps/documentation/urls/android-intents
 
 * Common-tech:
     * better message routing
     * handle errors
-    * create help-page with commands-list
     * add suspend/resume commands
     * raise broadcast messages for subscribers
     * refactor data and dropbox sync to store data files in folders

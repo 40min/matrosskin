@@ -1,6 +1,22 @@
 from datetime import datetime
-
 from pyowm.weatherapi25.weather import Weather
+from matrosskin.l10n import _
+
+
+def emodji_condition(condition: str) -> str:
+    return {
+        "пасмурно": "☁",
+        "ясно": "🔆",
+        "слегка облачно": "⛅️",
+        "легкий дождь": "🌧",
+        "облачно": "☁️",
+        "clear sky": "🔆",
+        "few clouds": "⛅️",
+        "broken clouds": "☁",
+        "light rain": "🌧",
+        "overcast clouds": "☁️",
+        "scattered clouds": "🌤️"
+    }.get(condition, condition)
 
 
 class WeatherDayFormatter:
@@ -30,15 +46,24 @@ class WeatherDayFormatter:
 
     def get_formatted(self) -> str:
         ref_time_format = '%Y-%m-%d, %H:%M:%S' if isinstance(self.ref_time, datetime) else '%Y-%m-%d'
-        return f"""
-- ref time: {self.ref_time.strftime(ref_time_format)}
-- temperature: {self.temperature}
-- condition: {self.status}
-- humidity: {self.humidity}
-- wind speed: {self.wind_speed}
-- wind gusts: {self.wind_gust}
-- pressure: {self.pressure}
-        """
+        values = {
+            "ref_time": self.ref_time.strftime(ref_time_format),
+            "temperature": self.temperature,
+            "condition": emodji_condition(self.status),
+            "humidity": self.humidity,
+            "wind_speed": self.wind_speed,
+            "wind_gusts": self.wind_gust,
+            "pressure": self.pressure
+        }
+        return _("""
+- ref time: {ref_time}
+- temperature 🌡️ : {temperature}
+- condition: {condition}
+- humidity: {humidity}
+- wind speed  🌬: {wind_speed} mps
+- wind gusts: {wind_gusts}
+- pressure: {pressure}
+        """) . format(**values)
 
 
 class WeatherForecastFormatter:
@@ -76,10 +101,11 @@ class WeatherForecastFormatter:
                     val = getattr(fc, param)
                     if not val:
                         continue
+                    val = emodji_condition(val) if param == "status" else str(val)
                     if param not in day_values:
-                        day_values[param] = [str(val)]
+                        day_values[param] = [val]
                     elif day_values[param][-1] != val:
-                        day_values[param].append(str(val))
+                        day_values[param].append(val)
 
             day = WeatherDayFormatter(
                 **dict((param, ', '.join(values)) for param, values in day_values.items()),
@@ -90,8 +116,9 @@ class WeatherForecastFormatter:
         self.days_list = squashed_days
 
     def get_formatted(self) -> str:
+        phrase = _("Weather for {city}").format(city=self.city)
         formatted_str = f"""
-            Weather for {self.city}
+            {phrase}
         
         """
         for day in self.days_list:

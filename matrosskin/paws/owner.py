@@ -24,7 +24,7 @@ def on_exit(update: Update, context: CallbackContext):
     logger.info(f"User {user_from} requests exit")
     if owner and user_from == owner:
         logger.info('Exiting ...')
-        context.bot.send_message(chat_id=update.message.chat_id, text="Buy-buy :)")
+        context.bot.send_message(chat_id=update.message.chat_id, text="bye-bye :)")
         threading.Thread(target=shutdown).start()
 
 

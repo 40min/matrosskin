@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2019-09-15 22:45+0300\n"
+"PO-Revision-Date: 2019-09-19 12:17+0300\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: matrosskin\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Last-Translator: \n"
+"Language: ru\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: paws/weather/forecasts.py:24
+msgid "weather not found"
+msgstr "погода не найдена"
+
+#: paws/weather/formatters.py:93
+#, python-brace-format
+msgid "Weather for {city}"
+msgstr "Погода для {city}"
+
+#: paws/weather/paw.py:30
+msgid "Would you mind sharing your location to show weather?"
+msgstr "Разрешите определение местоположения для показа погоды?"
+
+#: paws/weather/paw.py:31
+msgid "Would you mind sharing your location to show weather forecast?"
+msgstr "Разрешите определение местоположения для показа прогноза погоды?"
+
+#: matrosskin/paws/weather/forecasts.py:24
+msgid "weather for location is unavailable"
+msgstr "погода для местоположения недоступна"
+
+#: ./matrosskin/paws/weather/formatters.py:58
+msgid ""
+"\n"
+"- ref time: {ref_time}\n"
+"- temperature :thermometer:: {temperature}\n"
+"- condition: {condition}\n"
+"- humidity: {humidity}\n"
+"- wind speed  🌬: {wind_speed} mps\n"
+"- wind gusts: {wind_gusts}\n"
+"- pressure: {pressure}\n"
+"        "
+msgstr ""
+"\n"
+"- время прогноза: {ref_time}\n"
+"- температура :thermometer:: {temperature}\n"
+"- условия: {condition}\n"
+"- влажность: {humidity}\n"
+"- скорость ветра 🌬: {wind_speed} м/с\n"
+"- порывы ветра: {wind_gusts}\n"
+"- давление: {pressure}\n"
+"        "
