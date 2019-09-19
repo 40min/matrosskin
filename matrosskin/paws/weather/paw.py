@@ -10,7 +10,7 @@ from telegram.ext import (
     CallbackContext)
 from telegram import (
     KeyboardButton,
-    ReplyKeyboardMarkup
+    ReplyKeyboardMarkup,
 )
 
 from matrosskin.l10n import _
@@ -38,9 +38,10 @@ weather_by_coords_mapping = {
 
 request_geo_markup = ReplyKeyboardMarkup(
     [
-        [KeyboardButton('Approve', request_location=True)]
+        [KeyboardButton(_("Requested location"), request_location=True)]
     ],
-    one_time_keyboard=True
+    one_time_keyboard=True,
+    resize_keyboard=True
 )
 
 

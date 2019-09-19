@@ -59,3 +59,7 @@ msgstr ""
 "- wind gusts: {wind_gusts}\n"
 "- pressure: {pressure}\n"
 "        "
+
+#: ./matrosskin/paws/weather/paw.py:41
+msgid "Requested location"
+msgstr "Requested location"

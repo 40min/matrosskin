@@ -61,3 +61,7 @@ msgstr ""
 "- порывы ветра: {wind_gusts}\n"
 "- давление: {pressure}\n"
 "        "
+
+#: ./matrosskin/paws/weather/paw.py:41
+msgid "Requested location"
+msgstr "Запрос координат"

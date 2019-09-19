@@ -10,9 +10,6 @@
     * Add education of new model based on chat
     * Add news squash-by-days utility
     * Add filter fun/not-fun
-        * add classifier
-        * filter output
-        * scheduled re-education of classifier based on ratings
         * backup ratings to dropbox
     * Add merge news tool
 
@@ -20,17 +17,8 @@
     * Receive/save picture
     * install mushrooms lib
     
-* Weather
-    * Better approve button
-        
 * Talks
     * Weather integration (use action instead of text)
-    
-* Translations
-    * integration with Google API
-    * language select
-    * translate just text
-    * translate from image-photo
     
 * FriendsFinder
     * One user search another with nickname
