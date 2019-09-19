@@ -57,7 +57,7 @@ class WeatherDayFormatter:
         }
         return _("""
 - ref time: {ref_time}
-- temperature 🌡️ : {temperature}
+- temperature 🌡: {temperature}
 - condition: {condition}
 - humidity: {humidity}
 - wind speed  🌬: {wind_speed} mps
