@@ -12,10 +12,10 @@ from telegram.ext import (
 from telegram.ext.dispatcher import run_async
 import dialogflow_v2 as dialogflow
 
-from paws.generic import Paw
-from paws.news import get_news
-from paws.weather.paw import weather_request
-from paws.talks.session_storage import session_storage
+from matrosskin.paws.generic import Paw
+from matrosskin.paws.news import get_news
+from matrosskin.paws.weather.paw import weather_request
+from matrosskin.paws.talks.session_storage import session_storage
 import config
 
 DONT_UNDERSTAND_PHRASE = 'Mrrr .... ?'

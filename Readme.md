@@ -5,8 +5,6 @@
         - from time-to time 
         - mixed with chat-model
         - triggered by words
-    * Rate generated news
-        * rate as polling
     * Add education of new model based on chat
     * Add news squash-by-days utility
     * Add filter fun/not-fun
@@ -19,21 +17,12 @@
     
 * Talks
     * Weather integration (use action instead of text)
-    
-* FriendsFinder
-    * One user search another with nickname
-    * Bot should save user's nickname->chat_id mapping
-    * If user search another and chat_id is present then show
-    searchable user request to share coordinates with req_time/nickname 
-    from another user
-    * open google-maps on phone with coordinates: see here https://developers.google.com/maps/documentation/urls/android-intents
 
 * Common-tech:
     * better message routing
     * handle errors
     * add suspend/resume commands
     * raise broadcast messages for subscribers
-    * refactor data and dropbox sync to store data files in folders
     * Remove dependency from certain files: rated_news.csv, rated_bash
     
 # AWS prepare

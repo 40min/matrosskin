@@ -1,7 +1,10 @@
 from telegram import (
     InlineKeyboardButton,
-    InlineKeyboardMarkup
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    KeyboardButton
 )
+from matrosskin.l10n import _
 
 
 def yes_no_markup():
@@ -13,3 +16,12 @@ def yes_no_markup():
     ]
 
     return InlineKeyboardMarkup(keyboard)
+
+
+request_geo_markup = ReplyKeyboardMarkup(
+    [
+        [KeyboardButton(_("Requested location"), request_location=True)]
+    ],
+    one_time_keyboard=True,
+    resize_keyboard=True
+)

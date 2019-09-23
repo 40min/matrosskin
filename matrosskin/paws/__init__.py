@@ -1,8 +1,9 @@
-from .awesome import AwesomePaw
-from .news import NewsPaw
-from .owner import OwnerPaw
-from .weather.paw import WeatherPaw
-from .talks.paw import TalksPaw
+from matrosskin.paws.awesome import AwesomePaw
+from matrosskin.paws.news import NewsPaw
+from matrosskin.paws.owner import OwnerPaw
+from matrosskin.paws.weather.paw import WeatherPaw
+from matrosskin.paws.talks.paw import TalksPaw
+from matrosskin.paws.friend_finder import FriendFinderPaw
 
 
 def get_my_paws():
@@ -11,5 +12,6 @@ def get_my_paws():
         NewsPaw(),
         OwnerPaw(),
         WeatherPaw(),
-        TalksPaw()
+        TalksPaw(),
+        FriendFinderPaw(),
     ]
