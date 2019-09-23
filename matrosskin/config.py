@@ -15,7 +15,7 @@ owner = os.getenv("owner")
 
 # telegram-api
 tg_token = os.getenv("tg_token")
-tg_num_workers = os.getenv("tg_num_workers", 32)
+tg_num_workers = int(os.getenv("tg_num_workers", 32))
 
 # Dropbox
 dropbox_token = os.getenv("dropbox_token")
