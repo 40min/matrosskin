@@ -3,9 +3,8 @@ import logging
 from bot import dispatcher
 from bot import updater
 
-from paws import get_my_paws
-from utils.city_to_geoid import check_and_create_mapping
-from l10n import _
+from matrosskin.paws import get_my_paws
+from matrosskin.utils.city_to_geoid import check_and_create_mapping
 
 logging.basicConfig(format='[%(asctime)s][%(name)s] %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
