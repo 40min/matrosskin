@@ -6,10 +6,8 @@
         - mixed with chat-model
         - triggered by words
     * Add education of new model based on chat
-    * Add news squash-by-days utility
     * Add filter fun/not-fun
         * backup ratings to dropbox
-    * Add merge news tool
 
 * Mushrooms
     * Receive/save picture
@@ -21,9 +19,7 @@
 * Common-tech:
     * better message routing
     * handle errors
-    * add suspend/resume commands
     * raise broadcast messages for subscribers
-    * Remove dependency from certain files: rated_news.csv, rated_bash
     
 # AWS prepare
 ```bash

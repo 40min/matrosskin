@@ -1,6 +1,6 @@
 --extra-index-url https://test.pypi.org/simple/
 python-telegram-bot~=12.0.0
-analner~=0.0.11
+analner~=0.0.13
 python-dotenv~=0.10.3
 redis~=3.0.1
 pyowm~=2.10.0

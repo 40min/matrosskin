@@ -9,7 +9,7 @@ RUN pip install dropbox
 
 COPY ./gcp_key.json ./gcp_key.json
 
-RUN mkdir ./data
+RUN mkdir -p ./data/rated_bash
 
 RUN python -m nltk.downloader stopwords
 

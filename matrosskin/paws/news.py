@@ -19,7 +19,7 @@ from telegram import (
 from analner.news_maker import FunMaker
 from analner.head_grab import HeadGrab, TARGET_URL
 
-from bash_org_sentiment_analyser.classifier import classifier
+from bash_org_sentiment_analyser.classifier import Classifier
 
 import config
 from modules.storage import redis_storage
@@ -47,7 +47,10 @@ dropbox_token = config.dropbox_token
 
 head_grab = HeadGrab(data_path, TARGET_URL, dropbox_token)
 rating_file_path = f"{data_path}/{RATING_FILENAME}"
-classifier.add_rated_csv_file(rating_file_path)
+
+classifier = Classifier(data_path, show_stats=True)
+if os.path.isfile(rating_file_path):
+    classifier.add_rated_csv_file(rating_file_path)
 
 
 def train_classifier(make_cleanup: bool = False) -> str:
