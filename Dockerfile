@@ -11,6 +11,8 @@ COPY ./gcp_key.json ./gcp_key.json
 
 RUN mkdir -p ./data/rated_bash
 
+RUN mkdir -p ./data/corona_stats
+
 RUN python -m nltk.downloader stopwords
 
 CMD [ "python", "./matrosskin/app.py" ]
